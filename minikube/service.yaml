@@ -2,6 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: castlemock
+  labels:
+    app: castlemock
+    version: v1
 spec:
   selector:
     app: castlemock
