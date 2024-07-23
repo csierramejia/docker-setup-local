@@ -34,7 +34,7 @@ services:
       - artifactory_data:/var/opt/jfrog/artifactory
       - ./system.yaml:/var/opt/jfrog/artifactory/etc/system.yaml
     ports:
-      - "8080:8080"
+      - "9080:9080"
     depends_on:
       - postgres
 
@@ -46,6 +46,46 @@ services:
 #      - "27017:27017"
 #    volumes:
 #      - mongo-data:/data/db
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    depends_on:
+      - kafka
+    ports:
+      - "18080:18080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+
+  castlemock:
+    image: castlemock/castlemock:latest
+    ports:
+      - "8080:8080"
+    environment:
+      CASTLEMOCK_ADMIN_USERNAME: admin
+      CASTLEMOCK_ADMIN_PASSWORD: admin      
 
 volumes:
   mysql-data:

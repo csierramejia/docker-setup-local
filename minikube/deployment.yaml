@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: castlemock
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: castlemock
+  template:
+    metadata:
+      labels:
+        app: castlemock
+      annotations:
+        env: "ejemplo annotations develop"
+    spec:
+      containers:
+      - name: castlemock
+        image: castlemock/castlemock
+        ports:
+        - containerPort: 8080
+        env:
+        - name: NODE_ENV
+          value: "production"
+        volumeMounts:
+        - mountPath: /data/castlemock
+          name: castlemock-data
+      volumes:
+      - name: castlemock-data
+        persistentVolumeClaim:
+          claimName: castlemock-pvc

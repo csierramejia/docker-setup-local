@@ -11,3 +11,5 @@ docker-setup
 To set up, run:
 ```sh
 python scripts/setup.py
+
+python scripts\setup-minikube.py
