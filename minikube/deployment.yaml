@@ -12,7 +12,7 @@ spec:
       labels:
         app: castlemock
       annotations:
-        env: "ejemplo annotations develop"
+        env: "Ambiente develop"
     spec:
       containers:
       - name: castlemock
@@ -25,6 +25,13 @@ spec:
         volumeMounts:
         - mountPath: /data/castlemock
           name: castlemock-data
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "250m"
+            memory: "512Mi"          
       volumes:
       - name: castlemock-data
         persistentVolumeClaim:
